@@ -8,6 +8,7 @@ trait IsLogger {
 
 
 //---------------
+#[derive(Debug)]
 struct RealLogger {
 }
 
@@ -26,6 +27,7 @@ impl IsLogger for RealLogger {
 
 
 //---------------
+#[derive(Debug)]
 struct FakeLogger {
 }
 
@@ -44,6 +46,7 @@ impl IsLogger for FakeLogger {
 
 
 //--------------
+#[derive(Debug)]
 struct AnyLogger<L: IsLogger> {
     logger: L,
 }
@@ -62,10 +65,16 @@ impl<L: IsLogger> AnyLogger<L> {
 }
 
 
+//-----------
+type Logger = AnyLogger<RealLogger>;
+
+
 fn main() {
 
-    let logger = AnyLogger::<FakeLogger>::new();
+    let logger = Logger::new();
     logger.log("Hello world!");
+    
+    println!("logger is {:?}", logger);
 
 }
 
