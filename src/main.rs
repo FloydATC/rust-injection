@@ -1,10 +1,17 @@
 
 
+//----------
+trait IsLogger {
+    fn new() -> Self;
+    fn log(&self, msg: &str);
+}
 
+
+//---------------
 struct RealLogger {
 }
 
-impl RealLogger {
+impl IsLogger for RealLogger {
 
     fn new() -> Self {
         Self {
@@ -18,11 +25,11 @@ impl RealLogger {
 }
 
 
-
+//---------------
 struct FakeLogger {
 }
 
-impl FakeLogger {
+impl IsLogger for FakeLogger {
 
     fn new() -> Self {
         Self {
@@ -36,17 +43,29 @@ impl FakeLogger {
 }
 
 
+//--------------
+struct AnyLogger<L: IsLogger> {
+    logger: L,
+}
 
+impl<L: IsLogger> AnyLogger<L> {
 
+    fn new() -> Self {
+        Self {
+            logger: L::new(),
+        }
+    }
 
-
-
-
+    fn log(&self, msg: &str) {
+        self.logger.log(msg);
+    }
+}
 
 
 fn main() {
 
-    let logger = FakeLogger::new();
+    let logger = AnyLogger::<FakeLogger>::new();
     logger.log("Hello world!");
 
 }
+
